@@ -10,8 +10,6 @@ import { ApiService, SponsorPayload } from '../services/api.service';
   styleUrl: './sponsor-form.css',
 })
 export class SponsorForm {
-  readonly supportTypes = ['Financeiro', 'Produtos', 'Serviços', 'Divulgação'];
-
   form: SponsorPayload = {
     companyName: '',
     cnpj: '',
@@ -19,7 +17,6 @@ export class SponsorForm {
     email: '',
     phone: '',
     city: '',
-    supportType: '',
     notes: '',
   };
 

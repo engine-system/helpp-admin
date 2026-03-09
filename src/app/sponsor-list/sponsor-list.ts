@@ -1,11 +1,11 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { LowerCasePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { ApiService, Sponsor } from '../services/api.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-sponsor-list',
-  imports: [LowerCasePipe],
+  imports: [],
   templateUrl: './sponsor-list.html',
   styleUrl: './sponsor-list.css',
 })
@@ -14,7 +14,7 @@ export class SponsorList implements OnInit {
   loading = signal(true);
   error = signal('');
 
-  constructor(private api: ApiService, private router: Router) {}
+  constructor(private api: ApiService, private router: Router, private auth: AuthService) {}
 
   async ngOnInit() {
     try {
@@ -29,5 +29,14 @@ export class SponsorList implements OnInit {
 
   goToNew() {
     this.router.navigate(['/apoiadores/novo']);
+  }
+
+  goToDetail(id: string) {
+    this.router.navigate(['/apoiadores', id]);
+  }
+
+  logout() {
+    this.auth.logout();
+    this.router.navigate(['/login']);
   }
 }

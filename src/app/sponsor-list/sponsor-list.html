@@ -5,7 +5,10 @@
         <h1>Apoiadores</h1>
         <p class="subtitle">Empresas parceiras do Helpp</p>
       </div>
-      <button class="btn-add" (click)="goToNew()" title="Cadastrar novo apoiador">+</button>
+      <div class="header-actions">
+        <button class="btn-add" (click)="goToNew()" title="Cadastrar novo apoiador">+</button>
+        <button class="btn-logout" (click)="logout()" title="Sair">↩</button>
+      </div>
     </div>
 
     @if (loading()) {
@@ -21,13 +24,13 @@
     } @else {
       <div class="list">
         @for (s of sponsors(); track s._id) {
-          <div class="card">
+          <div class="card" (click)="goToDetail(s._id)" style="cursor:pointer">
             <div class="card-main">
               <div class="company-name">{{ s.companyName }}</div>
               <div class="meta">{{ s.contactName }} · {{ s.email }}</div>
               <div class="meta">{{ s.city }} · CNPJ {{ s.cnpj }}</div>
             </div>
-            <span class="badge" [class]="s.supportType | lowercase">{{ s.supportType }}</span>
+            <span class="meta">{{ s.city }}</span>
           </div>
         }
       </div>

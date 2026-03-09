@@ -1,0 +1,179 @@
+<div class="page">
+  <div class="container">
+
+    @if (loading()) {
+      <div class="state-msg">Carregando...</div>
+    } @else if (error() && !sponsor()) {
+      <div class="state-msg error">{{ error() }}</div>
+    } @else if (sponsor()) {
+
+      <!-- Header -->
+      <div class="header">
+        <button class="btn-back" (click)="goBack()">← Voltar</button>
+        <div class="sponsor-info">
+          <h1>{{ sponsor()!.companyName }}</h1>
+          <div class="meta">{{ sponsor()!.contactName }} · {{ sponsor()!.email }}</div>
+          <div class="meta">{{ sponsor()!.city }} · CNPJ {{ sponsor()!.cnpj }}</div>
+        </div>
+        <button class="btn-add" (click)="toggleForm()" [title]="showForm() ? 'Cancelar' : 'Adicionar produto ou serviço'">
+          {{ showForm() ? '×' : '+' }}
+        </button>
+      </div>
+
+      <!-- Logo -->
+      <div class="logo-section">
+        <div class="logo-label">Logo da empresa</div>
+        <div class="logo-row">
+          <label class="logo-upload" [class.has-logo]="sponsor()!.logo || logoPreview()">
+            @if (savingLogo()) {
+              <div class="logo-saving">Salvando...</div>
+            } @else if (sponsor()!.logo || logoPreview()) {
+              <img [src]="logoPreview() || sponsor()!.logo" class="logo-img" />
+              <span class="logo-change">Trocar</span>
+            } @else {
+              <div class="logo-placeholder">
+                <span>🏢</span>
+                <small>Clique para adicionar</small>
+              </div>
+            }
+            <input type="file" accept="image/*" (change)="onLogoChange($event)" hidden />
+          </label>
+          @if (sponsor()!.logo || logoPreview()) {
+            <button class="btn-remove-logo" (click)="removeLogo()" title="Remover logo">Remover</button>
+          }
+        </div>
+      </div>
+
+      <!-- Formulário de novo produto -->
+      @if (showForm()) {
+        <div class="form-card">
+          <h2>Novo produto / serviço</h2>
+
+          @if (error()) {
+            <div class="alert error">{{ error() }}</div>
+          }
+
+          <form (ngSubmit)="submit()" #f="ngForm">
+            <div class="row">
+              <div class="field">
+                <label>Nome *</label>
+                <input [(ngModel)]="form.name" name="name" placeholder="Ex: Cesta básica" required />
+              </div>
+              <div class="field">
+                <label>Tipo *</label>
+                <select [(ngModel)]="form.type" name="type" required>
+                  <option value="" disabled>Selecione...</option>
+                  @for (t of types; track t) {
+                    <option [value]="t">{{ t }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Descrição</label>
+              <textarea [(ngModel)]="form.description" name="description" rows="2" placeholder="Descreva o produto ou serviço..."></textarea>
+            </div>
+
+            <div class="field">
+              <label>Imagem</label>
+              <label class="upload-area" [class.has-image]="imagePreview()">
+                @if (imagePreview()) {
+                  <img [src]="imagePreview()" class="preview-img" />
+                  <span class="change-label">Trocar imagem</span>
+                } @else {
+                  <div class="upload-placeholder">
+                    <span class="upload-icon">📷</span>
+                    <span>Clique para selecionar</span>
+                    <small>JPG, PNG ou WebP</small>
+                  </div>
+                }
+                <input type="file" accept="image/*" (change)="onImageChange($event)" hidden />
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-cancel" (click)="toggleForm()">Cancelar</button>
+              <button type="submit" class="btn-submit" [disabled]="saving() || f.invalid">
+                {{ saving() ? 'Salvando...' : 'Salvar' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+
+      <!-- Lista de produtos -->
+      <div class="section-title">Produtos e Serviços</div>
+
+      @if (products().length === 0) {
+        <div class="empty">
+          <div class="empty-icon">📦</div>
+          <p>Nenhum item cadastrado.</p>
+          <span>Clique em <strong>+</strong> para adicionar.</span>
+        </div>
+      } @else {
+        <div class="product-grid">
+          @for (p of products(); track p._id) {
+            <div class="product-card">
+              @if (p.image) {
+                <img [src]="p.image" class="product-img" />
+              } @else {
+                <div class="product-img-placeholder">📦</div>
+              }
+              <div class="product-info">
+                <div class="product-name">{{ p.name }}</div>
+                @if (p.description) {
+                  <div class="product-desc">{{ p.description }}</div>
+                }
+                <span class="badge" [class]="p.type === 'Produto' ? 'produto' : 'servico'">{{ p.type }}</span>
+              </div>
+              <button class="btn-remove" (click)="remove(p._id)" title="Remover">×</button>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Requisições recebidas -->
+      <div class="section-title requests-title">
+        Requisições recebidas
+        @if (requests().length > 0) {
+          <span class="requests-count">{{ requests().length }}</span>
+        }
+      </div>
+
+      @if (requests().length === 0) {
+        <div class="empty">
+          <div class="empty-icon">📬</div>
+          <p>Nenhuma requisição ainda.</p>
+        </div>
+      } @else {
+        <div class="requests-list">
+          @for (r of requests(); track r._id) {
+            <div class="request-card">
+              <div class="request-main">
+                <div class="request-product">{{ r.productName }}</div>
+                <div class="request-user">{{ r.userName }} · {{ r.userContact }}</div>
+                @if (r.message) {
+                  <div class="request-message">"{{ r.message }}"</div>
+                }
+                <div class="request-date">{{ r.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
+              </div>
+              <div class="request-actions">
+                <span class="status-badge" [class]="r.status">
+                  {{ r.status === 'pending' ? 'Pendente' : r.status === 'contacted' ? 'Contatado' : 'Resolvido' }}
+                </span>
+                @if (r.status === 'pending') {
+                  <button class="btn-status contacted" (click)="updateStatus(r._id, 'contacted')">Contatei</button>
+                }
+                @if (r.status !== 'resolved') {
+                  <button class="btn-status resolved" (click)="updateStatus(r._id, 'resolved')">Resolver</button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+    }
+  </div>
+</div>

@@ -45,16 +45,6 @@
       </div>
 
       <div class="field">
-        <label>Tipo de apoio *</label>
-        <select [(ngModel)]="form.supportType" name="supportType" required>
-          <option value="" disabled>Selecione...</option>
-          @for (type of supportTypes; track type) {
-            <option [value]="type">{{ type }}</option>
-          }
-        </select>
-      </div>
-
-      <div class="field">
         <label>Observações</label>
         <textarea [(ngModel)]="form.notes" name="notes" rows="3" placeholder="Informações adicionais (opcional)"></textarea>
       </div>
