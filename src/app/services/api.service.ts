@@ -88,12 +88,14 @@ export class ApiService {
     return res.json();
   }
 
-  async updateRequestStatus(id: string, status: string): Promise<void> {
-    await fetch(`${API_URL}/sponsor-requests/${id}/status`, {
+  async updateRequestStatus(id: string, status: string): Promise<any> {
+    const res = await fetch(`${API_URL}/sponsor-requests/${id}/status`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),
     });
+    if (!res.ok) throw new Error('Erro ao atualizar status.');
+    return res.json();
   }
 
   async updateLogo(sponsorId: string, logo: string | null): Promise<void> {

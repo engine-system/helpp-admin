@@ -135,9 +135,9 @@ export class SponsorDetail implements OnInit {
   }
 
   async updateStatus(id: string, status: string) {
-    await this.api.updateRequestStatus(id, status);
+    const updated = await this.api.updateRequestStatus(id, status);
     this.requests.update(list =>
-      list.map(r => r._id === id ? { ...r, status } : r)
+      list.map(r => r._id === id ? { ...r, ...updated } : r)
     );
   }
 

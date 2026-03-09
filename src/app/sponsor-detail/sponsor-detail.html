@@ -156,7 +156,13 @@
                 @if (r.message) {
                   <div class="request-message">"{{ r.message }}"</div>
                 }
-                <div class="request-date">{{ r.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
+                <div class="request-date">Solicitado: {{ r.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
+                @if (r.contactedAt) {
+                  <div class="request-date">Contatado: {{ r.contactedAt | date:'dd/MM/yyyy HH:mm' }}</div>
+                }
+                @if (r.resolvedAt) {
+                  <div class="request-date">Resolvido: {{ r.resolvedAt | date:'dd/MM/yyyy HH:mm' }}</div>
+                }
               </div>
               <div class="request-actions">
                 <span class="status-badge" [class]="r.status">
