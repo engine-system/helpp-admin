@@ -1,0 +1,36 @@
+<div class="page">
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>Apoiadores</h1>
+        <p class="subtitle">Empresas parceiras do Helpp</p>
+      </div>
+      <button class="btn-add" (click)="goToNew()" title="Cadastrar novo apoiador">+</button>
+    </div>
+
+    @if (loading()) {
+      <div class="state-msg">Carregando...</div>
+    } @else if (error()) {
+      <div class="state-msg error">{{ error() }}</div>
+    } @else if (sponsors().length === 0) {
+      <div class="empty">
+        <div class="empty-icon">🤝</div>
+        <p>Nenhum apoiador cadastrado ainda.</p>
+        <span>Clique em <strong>+</strong> para adicionar o primeiro.</span>
+      </div>
+    } @else {
+      <div class="list">
+        @for (s of sponsors(); track s._id) {
+          <div class="card">
+            <div class="card-main">
+              <div class="company-name">{{ s.companyName }}</div>
+              <div class="meta">{{ s.contactName }} · {{ s.email }}</div>
+              <div class="meta">{{ s.city }} · CNPJ {{ s.cnpj }}</div>
+            </div>
+            <span class="badge" [class]="s.supportType | lowercase">{{ s.supportType }}</span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

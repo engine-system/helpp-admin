@@ -1,0 +1,67 @@
+<div class="page">
+  <div class="card">
+    <div class="card-header">
+      <button class="btn-back" (click)="goBack()">← Voltar</button>
+      <h1>Cadastro de Apoiador</h1>
+      <p class="subtitle">Preencha os dados da empresa parceira do Helpp.</p>
+    </div>
+
+    @if (error()) {
+      <div class="alert error">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="submit()" #f="ngForm">
+      <div class="row">
+        <div class="field">
+          <label>Nome da empresa *</label>
+          <input [(ngModel)]="form.companyName" name="companyName" placeholder="Razão social ou nome fantasia" required />
+        </div>
+        <div class="field">
+          <label>CNPJ *</label>
+          <input [(ngModel)]="form.cnpj" name="cnpj" placeholder="00.000.000/0000-00" required />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Nome do responsável *</label>
+          <input [(ngModel)]="form.contactName" name="contactName" placeholder="Nome completo" required />
+        </div>
+        <div class="field">
+          <label>E-mail *</label>
+          <input [(ngModel)]="form.email" name="email" type="email" placeholder="contato@empresa.com" required />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Telefone</label>
+          <input [(ngModel)]="form.phone" name="phone" placeholder="(00) 00000-0000" />
+        </div>
+        <div class="field">
+          <label>Cidade *</label>
+          <input [(ngModel)]="form.city" name="city" placeholder="Ex: São Paulo" required />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Tipo de apoio *</label>
+        <select [(ngModel)]="form.supportType" name="supportType" required>
+          <option value="" disabled>Selecione...</option>
+          @for (type of supportTypes; track type) {
+            <option [value]="type">{{ type }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Observações</label>
+        <textarea [(ngModel)]="form.notes" name="notes" rows="3" placeholder="Informações adicionais (opcional)"></textarea>
+      </div>
+
+      <button type="submit" [disabled]="loading() || f.invalid" class="btn-submit">
+        {{ loading() ? 'Cadastrando...' : 'Cadastrar Apoiador' }}
+      </button>
+    </form>
+  </div>
+</div>
